@@ -24,7 +24,7 @@ function App() {
 
   const getAmPmFormat = (timestamp: number): string => {
     if (!timestamp) return "";
-    const currentDate: Date = new Date(timestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone)) * 1000);
+    const currentDate: Date = new Date((timestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone))) * 1000);
 
     const prefix: string = currentDate.getUTCHours() >= 12 ? "PM" : "AM";
     const hours: number = currentDate.getUTCHours() % 12 || 12;
@@ -51,7 +51,7 @@ function App() {
             weatherData?.weather[0].description
           ) {
             if (weatherImages[i].description[j].icons.length > 1) {
-              const dateByLocation: Date = new Date(currentTimestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone)) * 1000);
+              const dateByLocation: Date = new Date((currentTimestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone))) * 1000);
               return dateByLocation.getUTCHours() <= 17
                 ? weatherImages[i].description[j].icons[0]
                 : weatherImages[i].description[j].icons[1];
@@ -102,13 +102,13 @@ function App() {
   };
 
   useEffect(() => {
-    getLocationInfos();
+    // getLocationInfos();
   }, []);
 
   return (
-    <div className="relative flex h-screen min-h-[1280px]  w-full flex-col items-center justify-center bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat">
+    <div className="relative flex h-screen min-h-[1280px] w-full flex-col items-center justify-center bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat">
       <div className="container flex h-full flex-col items-end justify-center gap-10">
-        <div className="relative w-[300px] rounded-xl">
+        <div className="relative w-[300px] rounded-xl ">
           <FaSearch className="absolute left-3 top-3 z-10" />
           <input
             type="text"
@@ -145,9 +145,13 @@ function App() {
             </div>
           )}
         </div>
-        <div className="glassmorphism relative flex h-[60%] w-full select-none items-center justify-around px-10 py-5">
+
+        {/* <div className="glassmorphism relative flex h-[60%] w-full select-none items-center justify-around px-10 py-5"> */}
+        <div className="glassmorphism relative grid grid-cols-2 grid-rows-3 h-[60%] w-full select-none px-10 py-5">
+
           <span className="absolute right-10 top-10 mr-3 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
-          <div className="flex flex-col gap-10 p-4 text-5xl">
+
+          <div className="flex flex-col gap-10 bg-red-400 p-4 text-5xl">
             <div className="flex items-end gap-3">
               <CiLocationOn className="text-6xl" />
               <span title="Location" className="text-5xl">
@@ -173,7 +177,7 @@ function App() {
             </div>
           </div>
 
-          <div className="flex h-fit gap-5 border-l-2 border-white">
+          <div className="flex gap-5 border-l-2 border-white bg-green-300">
             <div className="-mb-24 flex items-center gap-3 px-5 text-2xl">
               <MdOutlineWaterDrop className="text-4xl" />
               <span title="Humidity">{`${
@@ -193,7 +197,9 @@ function App() {
               <RiCelsiusLine className="absolute right-0 top-[60px] text-2xl text-[65px]" />
             </div>
           </div>
-          <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5">
+
+          {/* <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5 bg-blue-300"> */}
+          <div className="flex items-center p-5 bg-blue-300">
             <div className=" w-[200px] ">
               <GiSunrise className="inline-block text-4xl" />
               <span className="ml-4">
