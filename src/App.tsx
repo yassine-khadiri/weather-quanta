@@ -147,8 +147,7 @@ function App() {
         </div>
 
         {/* <div className="glassmorphism relative flex h-[60%] w-full select-none items-center justify-around px-10 py-5"> */}
-        <div className="glassmorphism relative grid grid-cols-2 grid-rows-3 h-[60%] w-full select-none px-10 py-5">
-
+        <div className="glassmorphism relative grid h-[60%] w-full select-none grid-rows-3 px-10 py-5 min-[1280px]:grid-cols-2">
           <span className="absolute right-10 top-10 mr-3 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
 
           <div className="flex flex-col gap-10 bg-red-400 p-4 text-5xl">
@@ -199,26 +198,26 @@ function App() {
           </div>
 
           {/* <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5 bg-blue-300"> */}
-          <div className="flex items-center p-5 bg-blue-300">
-            <div className=" w-[200px] ">
+          <div className="flex items-center bg-blue-300 p-5">
+            <div className=" min-[1280px]:w-[200px] ">
               <GiSunrise className="inline-block text-4xl" />
               <span className="ml-4">
                 {getAmPmFormat(weatherData?.sys.sunrise) || "-"}
               </span>
             </div>
-            <div className=" w-[200px] ">
+            <div className=" min-[1280px]:w-[200px] ">
               <GiSunset className="inline-block text-4xl" />
               <span className="ml-4">
                 {getAmPmFormat(weatherData?.sys.sunset) || "-"}
               </span>
             </div>
-            <div className=" w-[200px] ">
+            <div className="min-[1280px]:w-[200px] ">
               <FaTemperatureArrowUp className="inline-block text-4xl" />
               <span className="ml-4">{`${
                 Math.round(weatherData?.main.temp_min) || "-"
               } °C`}</span>
             </div>
-            <div className=" w-[200px] ">
+            <div className=" min-[1280px]:w-[200px] ">
               <FaTemperatureArrowDown className="inline-block text-4xl" />
               <span className="ml-4">{`${
                 Math.round(weatherData?.main.temp_max) || "-"
