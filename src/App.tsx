@@ -24,7 +24,12 @@ function App() {
 
   const getAmPmFormat = (timestamp: number): string => {
     if (!timestamp) return "";
-    const currentDate: Date = new Date((timestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone))) * 1000);
+    const currentDate: Date = new Date(
+      (timestamp +
+        (weatherData?.timezone < 0 ? -1 : 1) *
+          Math.abs(weatherData?.timezone)) *
+        1000,
+    );
 
     const prefix: string = currentDate.getUTCHours() >= 12 ? "PM" : "AM";
     const hours: number = currentDate.getUTCHours() % 12 || 12;
@@ -51,7 +56,12 @@ function App() {
             weatherData?.weather[0].description
           ) {
             if (weatherImages[i].description[j].icons.length > 1) {
-              const dateByLocation: Date = new Date((currentTimestamp + ((weatherData?.timezone < 0 ? -1 : 1) * Math.abs(weatherData?.timezone))) * 1000);
+              const dateByLocation: Date = new Date(
+                (currentTimestamp +
+                  (weatherData?.timezone < 0 ? -1 : 1) *
+                    Math.abs(weatherData?.timezone)) *
+                  1000,
+              );
               return dateByLocation.getUTCHours() <= 17
                 ? weatherImages[i].description[j].icons[0]
                 : weatherImages[i].description[j].icons[1];
@@ -146,25 +156,44 @@ function App() {
           )}
         </div>
 
-        {/* <div className="glassmorphism relative flex h-[60%] w-full select-none items-center justify-around px-10 py-5"> */}
-        <div className="glassmorphism relative grid h-[60%] w-full select-none grid-rows-3 px-10 py-5 min-[1280px]:grid-cols-2">
+        <div className="glassmorphism relative flex h-[60%] w-full select-none flex-col items-center justify-around px-10 py-5">
+          {/* <div className="glassmorphism relative grid h-[60%] w-full select-none grid-rows-3 px-10 py-5 min-[1280px]:grid-cols-2"> */}
           <span className="absolute right-10 top-10 mr-3 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
 
-          <div className="flex flex-col gap-10 bg-red-400 p-4 text-5xl">
-            <div className="flex items-end gap-3">
+          <div className="flex flex-col gap-10 p-5 text-5xl">
+            <div className=" flex flex-col gap-4 text-5xl">
+              <div className="flex items-center text-lg">
+                <CiLocationOn className="text-6xl" />
+                <span title="Location" className="text-5xl">
+                  {weatherData?.name || "-"}
+                </span>
+              </div>
+              <div>
+                <img
+                  src={"/assets/weather-icons/01d.png"}
+                  alt="weather icon"
+                  className="h-[130px]"
+                />
+              </div>
+              <span className="min-[1280px]:text-[40px]">
+                {weatherData?.weather[0].description || "-"}
+              </span>
+            </div>
+
+            {/* <div className="flex items-end gap-3">
               <CiLocationOn className="text-6xl" />
               <span title="Location" className="text-5xl">
                 {weatherData?.name || "-"}
               </span>
             </div>
             <div className="flex flex-col">
-              <div className="h-[130px] w-[150px] text-lg">
-                {/* <img
+              <div className="h-[130px] w-[150px] text-lg"> */}
+            {/* <img
                     src={`http://openweathermap.org/img/w/${weatherData?.weather[0].icon}.png`}
                     alt="weather icon"
                     className="w-full"
                   /> */}
-                <img
+            {/* <img
                   src={findAppropriateIcon()}
                   alt="weather icon"
                   className="w-full"
@@ -173,9 +202,31 @@ function App() {
               <span className="ml-1 mt-[35px] inline-block text-[40px]">
                 {weatherData?.weather[0].description || "-"}
               </span>
-            </div>
+            </div>*/}
           </div>
 
+          <div className="flex items-center gap-10 border-l-2 border-white pl-10 p-5">
+            <div>
+              <MdOutlineWaterDrop className="text-4xl" />
+              <span title="Humidity" className="mt-1 inline-block">{`${
+                Math.round(weatherData?.main.humidity) || "-"
+              } %`}</span>
+            </div>
+            <div>
+              <GiWindsock className="text-4xl" />
+              <span title="Wind Speed" className="mt-1 inline-block">{`${
+                Math.round(weatherData?.wind.speed) || "-"
+              } m/s`}</span>
+            </div>
+            <div className="relative">
+              <span className="text-[200px] mr-12" title="Temperature">
+                {`${Math.round(weatherData?.main.temp) || "-"}`}
+              </span>
+              <span className="text-[80px] absolute top-0 right-0">°C</span>
+              {/* <RiCelsiusLine className="absolute right-0 top-[60px] text-2xl text-[65px]" /> */}
+            </div>
+          </div>
+          {/* 
           <div className="flex gap-5 border-l-2 border-white bg-green-300">
             <div className="-mb-24 flex items-center gap-3 px-5 text-2xl">
               <MdOutlineWaterDrop className="text-4xl" />
@@ -195,7 +246,7 @@ function App() {
               </span>
               <RiCelsiusLine className="absolute right-0 top-[60px] text-2xl text-[65px]" />
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5 bg-blue-300"> */}
           <div className="flex items-center bg-blue-300 p-5">
