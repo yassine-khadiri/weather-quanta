@@ -2,7 +2,6 @@ import "./App.css";
 import { CiLocationOn } from "react-icons/ci";
 import { GiWindsock, GiSunrise, GiSunset } from "react-icons/gi";
 import { MdOutlineWaterDrop } from "react-icons/md";
-import { RiCelsiusLine } from "react-icons/ri";
 import { IoHeartSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaTemperatureArrowUp, FaTemperatureArrowDown } from "react-icons/fa6";
@@ -112,18 +111,18 @@ function App() {
   };
 
   useEffect(() => {
-    // getLocationInfos();
+    getLocationInfos();
   }, []);
 
   return (
-    <div className="relative flex h-screen min-h-[1280px] w-full flex-col items-center justify-center bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat">
+    <div className="relative flex h-screen min-h-[850px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat bg-blend-darken">
       <div className="container flex h-full flex-col items-end justify-center gap-10">
-        <div className="relative w-[300px] rounded-xl ">
+        <div className="relative mr-2 w-[250px] rounded-xl min-[460px]:mr-0 min-[460px]:w-[300px]">
           <FaSearch className="absolute left-3 top-3 z-10" />
           <input
             type="text"
             placeholder="Search For A City"
-            className="glassmorphism w-[300px] px-10 py-2"
+            className="glassmorphism w-full px-10 py-2"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -131,7 +130,7 @@ function App() {
             }}
           />
           {search.length > 0 && hide && (
-            <div className="glassmorphism absolute z-10 mt-2 max-h-[400px] w-[300px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px]">
+            <div className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]">
               {
                 ((filtredCities = moroccoCities
                   .filter((el) =>
@@ -156,121 +155,82 @@ function App() {
           )}
         </div>
 
-        <div className="glassmorphism relative flex h-[60%] w-full select-none flex-col items-center justify-around px-10 py-5">
-          {/* <div className="glassmorphism relative grid h-[60%] w-full select-none grid-rows-3 px-10 py-5 min-[1280px]:grid-cols-2"> */}
-          <span className="absolute right-10 top-10 mr-3 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
+        <div className="glassmorphism relative grid h-[60%] min-h-[680px] w-full select-none grid-cols-[minmax(0,auto)] grid-rows-[repeat(3,minmax(0,auto))] px-1 pb-5 pt-24 min-[460px]:items-end min-[460px]:px-5 lg:grid-cols-2">
+          <span className="absolute right-10 top-10 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
 
-          <div className="flex flex-col gap-10 p-5 text-5xl">
+          <div className="flex flex-col justify-center gap-10 p-5 text-5xl">
             <div className=" flex flex-col gap-4 text-5xl">
               <div className="flex items-center text-lg">
-                <CiLocationOn className="text-6xl" />
-                <span title="Location" className="text-5xl">
+                <CiLocationOn className="text-3xl min-[1280px]:text-6xl" />
+                <span
+                  title="Location"
+                  className="text-2xl min-[1280px]:text-5xl"
+                >
                   {weatherData?.name || "-"}
                 </span>
               </div>
               <div>
                 <img
-                  src={"/assets/weather-icons/01d.png"}
-                  alt="weather icon"
-                  className="h-[130px]"
-                />
-              </div>
-              <span className="min-[1280px]:text-[40px]">
-                {weatherData?.weather[0].description || "-"}
-              </span>
-            </div>
-
-            {/* <div className="flex items-end gap-3">
-              <CiLocationOn className="text-6xl" />
-              <span title="Location" className="text-5xl">
-                {weatherData?.name || "-"}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <div className="h-[130px] w-[150px] text-lg"> */}
-            {/* <img
-                    src={`http://openweathermap.org/img/w/${weatherData?.weather[0].icon}.png`}
-                    alt="weather icon"
-                    className="w-full"
-                  /> */}
-            {/* <img
                   src={findAppropriateIcon()}
                   alt="weather icon"
-                  className="w-full"
+                  className="h-[80px] min-[1280px]:h-[130px]"
                 />
               </div>
-              <span className="ml-1 mt-[35px] inline-block text-[40px]">
+              <span className="text-[20px] min-[1280px]:text-[40px]">
                 {weatherData?.weather[0].description || "-"}
               </span>
-            </div>*/}
+            </div>
           </div>
 
-          <div className="flex items-center gap-10 border-l-2 border-white pl-10 p-5">
+          <div className="flex flex-col-reverse flex-wrap items-center justify-around border-l-2 border-white p-5 max-[1280px]:border-none min-[460px]:flex-row min-[460px]:gap-10">
             <div>
-              <MdOutlineWaterDrop className="text-4xl" />
-              <span title="Humidity" className="mt-1 inline-block">{`${
+              <MdOutlineWaterDrop className="text-2xl min-[1280px]:text-4xl" />
+              <span title="Humidity" className="ml-3 mt-1 inline-block">{`${
                 Math.round(weatherData?.main.humidity) || "-"
               } %`}</span>
             </div>
             <div>
-              <GiWindsock className="text-4xl" />
-              <span title="Wind Speed" className="mt-1 inline-block">{`${
+              <GiWindsock className="text-2xl min-[1280px]:text-4xl" />
+              <span title="Wind Speed" className="ml-3 mt-1 inline-block">{`${
                 Math.round(weatherData?.wind.speed) || "-"
               } m/s`}</span>
             </div>
             <div className="relative">
-              <span className="text-[200px] mr-12" title="Temperature">
+              <span
+                className="mr-10 text-[100px] min-[1280px]:mr-20 min-[1280px]:text-[200px]"
+                title="Temperature"
+              >
                 {`${Math.round(weatherData?.main.temp) || "-"}`}
               </span>
-              <span className="text-[80px] absolute top-0 right-0">°C</span>
-              {/* <RiCelsiusLine className="absolute right-0 top-[60px] text-2xl text-[65px]" /> */}
+              <span className="absolute right-0 top-5 text-[40px] min-[1280px]:text-[80px]">
+                °C
+              </span>
             </div>
           </div>
-          {/* 
-          <div className="flex gap-5 border-l-2 border-white bg-green-300">
-            <div className="-mb-24 flex items-center gap-3 px-5 text-2xl">
-              <MdOutlineWaterDrop className="text-4xl" />
-              <span title="Humidity">{`${
-                Math.round(weatherData?.main.humidity) || "-"
-              } %`}</span>
-            </div>
-            <div className="-mb-24 flex items-center gap-3 px-5 text-2xl">
-              <GiWindsock className="text-4xl" />
-              <span title="Wind Speed">{`${
-                Math.round(weatherData?.wind.speed) || "-"
-              } m/s`}</span>
-            </div>
-            <div className="relative px-5">
-              <span className="mr-12 text-[200px]" title="Temperature">
-                {Math.round(weatherData?.main.temp) || "-"}
-              </span>
-              <RiCelsiusLine className="absolute right-0 top-[60px] text-2xl text-[65px]" />
-            </div>
-          </div> */}
 
           {/* <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5 bg-blue-300"> */}
-          <div className="flex items-center bg-blue-300 p-5">
-            <div className=" min-[1280px]:w-[200px] ">
-              <GiSunrise className="inline-block text-4xl" />
-              <span className="ml-4">
+          <div className="flex flex-wrap items-center justify-around gap-8 p-5 min-[1280px]:gap-24">
+            <div>
+              <GiSunrise className="text-2xl min-[1280px]:text-4xl" />
+              <span className="ml-3">
                 {getAmPmFormat(weatherData?.sys.sunrise) || "-"}
               </span>
             </div>
-            <div className=" min-[1280px]:w-[200px] ">
-              <GiSunset className="inline-block text-4xl" />
-              <span className="ml-4">
+            <div className="">
+              <GiSunset className="text-2xl min-[1280px]:text-4xl" />
+              <span className="ml-3">
                 {getAmPmFormat(weatherData?.sys.sunset) || "-"}
               </span>
             </div>
-            <div className="min-[1280px]:w-[200px] ">
-              <FaTemperatureArrowUp className="inline-block text-4xl" />
-              <span className="ml-4">{`${
+            <div className="">
+              <FaTemperatureArrowUp className="text-2xl min-[1280px]:text-4xl" />
+              <span className="ml-3">{`${
                 Math.round(weatherData?.main.temp_min) || "-"
               } °C`}</span>
             </div>
-            <div className=" min-[1280px]:w-[200px] ">
-              <FaTemperatureArrowDown className="inline-block text-4xl" />
-              <span className="ml-4">{`${
+            <div className=" ">
+              <FaTemperatureArrowDown className="text-2xl min-[1280px]:text-4xl" />
+              <span className="ml-3">{`${
                 Math.round(weatherData?.main.temp_max) || "-"
               } °C`}</span>
             </div>
