@@ -13,3 +13,18 @@ body {
   -webkit-backdrop-filter: blur(3.1px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+/* Remove background from the scrollbar track */
+.glassmorphism::-webkit-scrollbar {
+  width: 0.3vw;
+}
+
+/* Remove background from the scrollbar handle */
+.glassmorphism::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.glassmorphism::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 6px;
+}

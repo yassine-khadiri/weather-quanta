@@ -24,10 +24,7 @@ function App() {
   const getAmPmFormat = (timestamp: number): string => {
     if (!timestamp) return "";
     const currentDate: Date = new Date(
-      (timestamp +
-        (weatherData?.timezone < 0 ? -1 : 1) *
-          Math.abs(weatherData?.timezone)) *
-        1000,
+      (timestamp + weatherData?.timezone) * 1000,
     );
 
     const prefix: string = currentDate.getUTCHours() >= 12 ? "PM" : "AM";
@@ -56,10 +53,7 @@ function App() {
           ) {
             if (weatherImages[i].description[j].icons.length > 1) {
               const dateByLocation: Date = new Date(
-                (currentTimestamp +
-                  (weatherData?.timezone < 0 ? -1 : 1) *
-                    Math.abs(weatherData?.timezone)) *
-                  1000,
+                (currentTimestamp + weatherData?.timezone) * 1000,
               );
               return dateByLocation.getUTCHours() <= 17
                 ? weatherImages[i].description[j].icons[0]
@@ -74,12 +68,27 @@ function App() {
     return "";
   };
 
+  const [suggestion, setSuggestion] = useState<any>([]);
+
+  const getSuggestedCities = async (city: string) => {
+    try {
+      const suggestedCites = await axios.get(
+        `https://api.locationiq.com/v1/autocomplete?key=${
+          import.meta.env.VITE_LOCATIONIQ_API_KEY
+        }&q=${city}`,
+      );
+      setSuggestion(suggestedCites.data);
+      console.log("cites", suggestedCites.data);
+    } catch {
+      console.log("Connot Get Suggested Cites!");
+    }
+  };
+
   const getLocationInfos = async () => {
     try {
       const locationData = await axios.get(
         `https://ipinfo.io/json?token=${import.meta.env.VITE_IP_INFO_TOKEN}`,
       );
-
       getWeatherInfos(locationData.data.city);
     } catch {
       console.log("Connot Get Weather Infos!");
@@ -112,10 +121,11 @@ function App() {
 
   useEffect(() => {
     getLocationInfos();
+    // getSuggestedCities();
   }, []);
 
   return (
-    <div className="relative flex h-screen min-h-[850px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat bg-blend-darken">
+    <div className="relative flex h-screen min-h-[850px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat py-8 bg-blend-darken">
       <div className="container flex h-full flex-col items-end justify-center gap-10">
         <div className="relative mr-2 w-[250px] rounded-xl min-[460px]:mr-0 min-[460px]:w-[300px]">
           <FaSearch className="absolute left-3 top-3 z-10" />
@@ -126,30 +136,41 @@ function App() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
+              getSuggestedCities(e.target.value);
               setHide(true);
             }}
           />
           {search.length > 0 && hide && (
             <div className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]">
-              {
-                ((filtredCities = moroccoCities
-                  .filter((el) =>
-                    el.city
-                      .toLowerCase()
-                      .startsWith(search.trim().toLowerCase()),
-                  )
-                  .map((el) => (
-                    <div
-                      key={el.id}
-                      className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
-                      onClick={(e) =>
-                        getWeatherInfos((e.target as Node).textContent!)
-                      }
-                    >
-                      {el.city}
-                    </div>
-                  ))),
-                filtredCities.length > 0 ? filtredCities : "City Not Found!")
+              {suggestion?.map((elem: any, i: number) => 
+                <div
+                  key={i}
+                  className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
+                  onClick={(e) =>
+                    getWeatherInfos((e.target as Node).textContent!)
+                  }
+                >
+                  {elem.display_place}
+                </div>
+              )
+              // ((filtredCities = moroccoCities
+              //   .filter((el) =>
+              //     el.city
+              //       .toLowerCase()
+              //       .startsWith(search.trim().toLowerCase()),
+              //   )
+              //   .map((el) => (
+              //     <div
+              //       key={el.id}
+              //       className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
+              //       onClick={(e) =>
+              //         getWeatherInfos((e.target as Node).textContent!)
+              //       }
+              //     >
+              //       {el.city}
+              //     </div>
+              //   ))),
+              // filtredCities.length > 0 ? filtredCities : "City Not Found!")
               }
             </div>
           )}
@@ -228,7 +249,7 @@ function App() {
                 Math.round(weatherData?.main.temp_min) || "-"
               } °C`}</span>
             </div>
-            <div className=" ">
+            <div>
               <FaTemperatureArrowDown className="text-2xl min-[1280px]:text-4xl" />
               <span className="ml-3">{`${
                 Math.round(weatherData?.main.temp_max) || "-"
