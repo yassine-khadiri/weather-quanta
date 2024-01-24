@@ -8,7 +8,6 @@ import { FaTemperatureArrowUp, FaTemperatureArrowDown } from "react-icons/fa6";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { monthsOfYear, weatherImages } from "./utils/data";
-import moroccoCities from "./utils/morocco-cities.json";
 
 function App() {
   const currentTimestamp: number = Date.now();
@@ -32,53 +31,82 @@ function App() {
     return `${hours}:${currentDate.getUTCMinutes()} ${prefix}`;
   };
 
-  // const daysOfWeek : string[] = [
-  //   "Sunday",
-  //   "Monday",
-  //   "Tuesday",
-  //   "Wednesday",
-  //   "Thursday",
-  //   "Friday",
-  //   "Saturday",
-  // ];
-
   const findAppropriateIcon = (): string => {
-    for (let i = 0; i < weatherImages.length; i++) {
-      if (weatherImages[i].main === weatherData?.weather[0].main) {
-        let j = 0;
-        for (j; j < weatherImages[i].description.length; j++) {
-          if (
-            weatherImages[i].description[j].value ===
-            weatherData?.weather[0].description
-          ) {
-            if (weatherImages[i].description[j].icons.length > 1) {
-              const dateByLocation: Date = new Date(
-                (currentTimestamp + weatherData?.timezone) * 1000,
-              );
-              return dateByLocation.getUTCHours() <= 17
-                ? weatherImages[i].description[j].icons[0]
-                : weatherImages[i].description[j].icons[1];
-            } else return weatherImages[i].description[j].icons[0];
+    // elem.description.map((elem) => {
+    //   if (elem.icons.length > 1) {
+    //     const dateByLocation: Date = new Date(
+    //       (currentTimestamp + weatherData?.timezone) * 1000,
+    //     );
+    //     icon =
+    //       dateByLocation.getUTCHours() <= 17
+    //         ? elem.icons[0]
+    //         : elem.icons[1];
+    //   } else icon = elem.icons[0];
+    // }),
+    // );
 
-            // console.log(weatherImages[i].description[j].icons[0]);
-          }
+    weatherImages
+      .filter((elem) => {
+        if (
+          elem.main === weatherData?.weather[0].main &&
+          elem.description.some(
+            (elem) => elem.value === weatherData?.weather[0].description,
+          )
+        )
+          return elem.description;
+      })
+      .map((elem) => {
+        const matchingDescription = elem.description.find(
+          (elem) => elem.value === weatherData?.weather[0].description,
+        );
+
+        console.log(matchingDescription);
+
+        if (matchingDescription?.icons.length! > 1) {
+          const dateByLocation: Date = new Date(
+            (currentTimestamp + weatherData?.timezone) * 1000,
+          );
+
+          return dateByLocation.getUTCHours() <= 17
+            ? matchingDescription?.icons[0]
+            : matchingDescription?.icons[1];
         }
-      }
-    }
+        return matchingDescription?.icons[0];
+      });
+
+    // for (let i = 0; i < weatherImages.length; i++) {
+    //   if (weatherImages[i].main === weatherData?.weather[0].main) {
+    //     let j = 0;
+    //     for (j; j < weatherImages[i].description.length; j++) {
+    //       if (
+    //         weatherImages[i].description[j].value ===
+    //         weatherData?.weather[0].description
+    //       ) {
+    //         if (weatherImages[i].description[j].icons.length > 1) {
+    //           const dateByLocation: Date = new Date(
+    //             (currentTimestamp + weatherData?.timezone) * 1000,
+    //           );
+    //           return dateByLocation.getUTCHours() <= 17
+    //             ? weatherImages[i].description[j].icons[0]
+    //             : weatherImages[i].description[j].icons[1];
+    //         } else return weatherImages[i].description[j].icons[0];
+
+    //         // console.log(weatherImages[i].description[j].icons[0]);
+    //       }
+    //     }
+    //   }
+    // }
     return "";
   };
 
   const [suggestion, setSuggestion] = useState<any>([]);
 
-  const getSuggestedCities = async (city: string) => {
+  const getSuggestedCities = async () => {
     try {
       const suggestedCites = await axios.get(
-        `https://api.locationiq.com/v1/autocomplete?key=${
-          import.meta.env.VITE_LOCATIONIQ_API_KEY
-        }&q=${city}`,
+        `https://yassine-khadiri.github.io/world-cities/worldCities.json`,
       );
       setSuggestion(suggestedCites.data);
-      console.log("cites", suggestedCites.data);
     } catch {
       console.log("Connot Get Suggested Cites!");
     }
@@ -121,7 +149,6 @@ function App() {
 
   useEffect(() => {
     getLocationInfos();
-    // getSuggestedCities();
   }, []);
 
   return (
@@ -136,41 +163,34 @@ function App() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              getSuggestedCities(e.target.value);
+              getSuggestedCities();
               setHide(true);
             }}
           />
-          {search.length > 0 && hide && (
+          {search.trim().length > 0 && hide && (
             <div className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]">
-              {suggestion?.map((elem: any, i: number) => 
-                <div
-                  key={i}
-                  className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
-                  onClick={(e) =>
-                    getWeatherInfos((e.target as Node).textContent!)
-                  }
-                >
-                  {elem.display_place}
-                </div>
-              )
-              // ((filtredCities = moroccoCities
-              //   .filter((el) =>
-              //     el.city
-              //       .toLowerCase()
-              //       .startsWith(search.trim().toLowerCase()),
-              //   )
-              //   .map((el) => (
-              //     <div
-              //       key={el.id}
-              //       className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
-              //       onClick={(e) =>
-              //         getWeatherInfos((e.target as Node).textContent!)
-              //       }
-              //     >
-              //       {el.city}
-              //     </div>
-              //   ))),
-              // filtredCities.length > 0 ? filtredCities : "City Not Found!")
+              {
+                ((filtredCities = suggestion
+                  .filter((elem: any) =>
+                    elem.city
+                      .toLowerCase()
+                      .startsWith(search.trim().toLowerCase()),
+                  )
+                  .map((elem: any) => (
+                    <div
+                      key={elem.id}
+                      className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
+                      onClick={(e) =>
+                        getWeatherInfos(
+                          e.currentTarget.querySelector("h2")?.textContent!,
+                        )
+                      }
+                    >
+                      <h2 className="font-[900]">{elem.city}</h2>
+                      <span className="text-[10px]">{elem.country}</span>
+                    </div>
+                  ))),
+                filtredCities.length > 0 ? filtredCities : "City Not Found!")
               }
             </div>
           )}
@@ -229,7 +249,6 @@ function App() {
             </div>
           </div>
 
-          {/* <div className="absolute bottom-10 flex h-[100px] w-[90%] items-center p-5 bg-blue-300"> */}
           <div className="flex flex-wrap items-center justify-around gap-8 p-5 min-[1280px]:gap-24">
             <div>
               <GiSunrise className="text-2xl min-[1280px]:text-4xl" />
