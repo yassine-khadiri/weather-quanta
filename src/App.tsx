@@ -5,9 +5,10 @@ import { MdOutlineWaterDrop } from "react-icons/md";
 import { IoHeartSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaTemperatureArrowUp, FaTemperatureArrowDown } from "react-icons/fa6";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { monthsOfYear, weatherImages } from "./utils/data";
+import { SuggestType } from "./utils/data";
+import axios from "axios";
 
 function App() {
   const currentTimestamp: number = Date.now();
@@ -17,11 +18,13 @@ function App() {
   const day: number = currentDate.getDate();
   const [search, setSearch] = useState<string>("");
   const [hide, setHide] = useState<boolean | null>(null);
+  const [icon, setIcon] = useState<string | null>(null);
   const [weatherData, setWeatherData] = useState<any>();
+  const [suggestion, setSuggestion] = useState<SuggestType[]>([]);
   let filtredCities: JSX.Element[];
 
   const getAmPmFormat = (timestamp: number): string => {
-    if (!timestamp) return "";
+    if (!timestamp) return "-";
     const currentDate: Date = new Date(
       (timestamp + weatherData?.timezone) * 1000,
     );
@@ -31,75 +34,37 @@ function App() {
     return `${hours}:${currentDate.getUTCMinutes()} ${prefix}`;
   };
 
-  const findAppropriateIcon = (): string => {
-    // elem.description.map((elem) => {
-    //   if (elem.icons.length > 1) {
-    //     const dateByLocation: Date = new Date(
-    //       (currentTimestamp + weatherData?.timezone) * 1000,
-    //     );
-    //     icon =
-    //       dateByLocation.getUTCHours() <= 17
-    //         ? elem.icons[0]
-    //         : elem.icons[1];
-    //   } else icon = elem.icons[0];
-    // }),
-    // );
+  const findAppropriateIcon = () => {
+    console.log(weatherData);
 
-    weatherImages
-      .filter((elem) => {
-        if (
+    console.log(weatherData?.weather[0].main);
+    let iconImg: string = weatherImages
+      .filter(
+        (elem) =>
           elem.main === weatherData?.weather[0].main &&
           elem.description.some(
             (elem) => elem.value === weatherData?.weather[0].description,
-          )
-        )
-          return elem.description;
-      })
+          ),
+      )
       .map((elem) => {
+        console.log("inside map");
         const matchingDescription = elem.description.find(
           (elem) => elem.value === weatherData?.weather[0].description,
         );
-
-        console.log(matchingDescription);
-
         if (matchingDescription?.icons.length! > 1) {
-          const dateByLocation: Date = new Date(
-            (currentTimestamp + weatherData?.timezone) * 1000,
+          return matchingDescription?.icons.find(
+            (elem) =>
+              elem.substring(
+                elem.lastIndexOf("/") + 1,
+                elem.lastIndexOf("."),
+              ) === weatherData?.weather[0].icon,
           );
-
-          return dateByLocation.getUTCHours() <= 17
-            ? matchingDescription?.icons[0]
-            : matchingDescription?.icons[1];
         }
         return matchingDescription?.icons[0];
-      });
-
-    // for (let i = 0; i < weatherImages.length; i++) {
-    //   if (weatherImages[i].main === weatherData?.weather[0].main) {
-    //     let j = 0;
-    //     for (j; j < weatherImages[i].description.length; j++) {
-    //       if (
-    //         weatherImages[i].description[j].value ===
-    //         weatherData?.weather[0].description
-    //       ) {
-    //         if (weatherImages[i].description[j].icons.length > 1) {
-    //           const dateByLocation: Date = new Date(
-    //             (currentTimestamp + weatherData?.timezone) * 1000,
-    //           );
-    //           return dateByLocation.getUTCHours() <= 17
-    //             ? weatherImages[i].description[j].icons[0]
-    //             : weatherImages[i].description[j].icons[1];
-    //         } else return weatherImages[i].description[j].icons[0];
-
-    //         // console.log(weatherImages[i].description[j].icons[0]);
-    //       }
-    //     }
-    //   }
-    // }
-    return "";
+      })
+      .pop()!;
+    setIcon(iconImg as string);
   };
-
-  const [suggestion, setSuggestion] = useState<any>([]);
 
   const getSuggestedCities = async () => {
     try {
@@ -117,30 +82,33 @@ function App() {
       const locationData = await axios.get(
         `https://ipinfo.io/json?token=${import.meta.env.VITE_IP_INFO_TOKEN}`,
       );
-      getWeatherInfos(locationData.data.city);
+
+      // const [extractedLat, extractedLng] = locationData.data.loc.split(",");
+      getWeatherInfos(locationData.data.city, locationData.data.country);
     } catch {
       console.log("Connot Get Weather Infos!");
     }
   };
 
-  const getWeatherInfos = async (location: string) => {
-    setSearch(location);
+  const getWeatherInfos = async (city: string, countryCode: string) => {
+    setSearch(`${city}, ${countryCode}`);
     setHide(false);
 
     try {
-      const latLongData = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${
-          import.meta.env.VITE_WEATHER_API_KEY
-        }`,
-      );
+      // const data = await axios.get(
+      //   `https://api.openweathermap.org/data/2.5/weather?lat=${
+      //     location.lat
+      //   }&lon=${location.lng}&appid=${
+      //     import.meta.env.VITE_WEATHER_API_KEY
+      //   }&units=metric`,
+      // );
 
       const data = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${
-          latLongData.data[0].lat
-        }&lon=${latLongData.data[0].lon}&appid=${
+        `http://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${
           import.meta.env.VITE_WEATHER_API_KEY
         }&units=metric`,
       );
+
       setWeatherData(data.data);
     } catch {
       console.log("Connot Get Weather Infos!");
@@ -150,6 +118,11 @@ function App() {
   useEffect(() => {
     getLocationInfos();
   }, []);
+
+  useEffect(() => {
+    console.log("icon");
+    findAppropriateIcon();
+  }, [weatherData]);
 
   return (
     <div className="relative flex h-screen min-h-[850px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat py-8 bg-blend-darken">
@@ -171,20 +144,16 @@ function App() {
             <div className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]">
               {
                 ((filtredCities = suggestion
-                  .filter((elem: any) =>
+                  .filter((elem: SuggestType) =>
                     elem.city
                       .toLowerCase()
                       .startsWith(search.trim().toLowerCase()),
                   )
-                  .map((elem: any) => (
+                  .map((elem: SuggestType) => (
                     <div
                       key={elem.id}
                       className={`w-full cursor-pointer p-3 duration-300 ease-in-out hover:bg-[rgba(255,255,255,.3)]`}
-                      onClick={(e) =>
-                        getWeatherInfos(
-                          e.currentTarget.querySelector("h2")?.textContent!,
-                        )
-                      }
+                      onClick={() => getWeatherInfos(elem.city, elem.iso2)}
                     >
                       <h2 className="font-[900]">{elem.city}</h2>
                       <span className="text-[10px]">{elem.country}</span>
@@ -212,8 +181,8 @@ function App() {
               </div>
               <div>
                 <img
-                  src={findAppropriateIcon()}
-                  alt="weather icon"
+                  src={icon || "-"}
+                  alt=""
                   className="h-[80px] min-[1280px]:h-[130px]"
                 />
               </div>
@@ -227,13 +196,17 @@ function App() {
             <div>
               <MdOutlineWaterDrop className="text-2xl min-[1280px]:text-4xl" />
               <span title="Humidity" className="ml-3 mt-1 inline-block">{`${
-                Math.round(weatherData?.main.humidity) || "-"
+                weatherData?.main.humidity != undefined
+                  ? Math.round(weatherData?.main.humidity)
+                  : "-"
               } %`}</span>
             </div>
             <div>
               <GiWindsock className="text-2xl min-[1280px]:text-4xl" />
               <span title="Wind Speed" className="ml-3 mt-1 inline-block">{`${
-                Math.round(weatherData?.wind.speed) || "-"
+                weatherData?.wind.speed != undefined
+                  ? Math.round(weatherData?.wind.speed)
+                  : "-"
               } m/s`}</span>
             </div>
             <div className="relative">
@@ -241,7 +214,12 @@ function App() {
                 className="mr-10 text-[100px] min-[1280px]:mr-20 min-[1280px]:text-[200px]"
                 title="Temperature"
               >
-                {`${Math.round(weatherData?.main.temp) || "-"}`}
+                {`${
+                  weatherData?.main.temp !== undefined
+                    ? Math.round(weatherData?.main.temp)
+                    : "-"
+                }
+`}
               </span>
               <span className="absolute right-0 top-5 text-[40px] min-[1280px]:text-[80px]">
                 °C
@@ -253,25 +231,29 @@ function App() {
             <div>
               <GiSunrise className="text-2xl min-[1280px]:text-4xl" />
               <span className="ml-3">
-                {getAmPmFormat(weatherData?.sys.sunrise) || "-"}
+                {getAmPmFormat(weatherData?.sys.sunrise)}
               </span>
             </div>
-            <div className="">
+            <div>
               <GiSunset className="text-2xl min-[1280px]:text-4xl" />
               <span className="ml-3">
-                {getAmPmFormat(weatherData?.sys.sunset) || "-"}
+                {getAmPmFormat(weatherData?.sys.sunset)}
               </span>
             </div>
-            <div className="">
+            <div>
               <FaTemperatureArrowUp className="text-2xl min-[1280px]:text-4xl" />
               <span className="ml-3">{`${
-                Math.round(weatherData?.main.temp_min) || "-"
+                weatherData?.main.temp_max != undefined
+                  ? Math.round(weatherData?.main.temp_max)
+                  : "-"
               } °C`}</span>
             </div>
             <div>
               <FaTemperatureArrowDown className="text-2xl min-[1280px]:text-4xl" />
               <span className="ml-3">{`${
-                Math.round(weatherData?.main.temp_max) || "-"
+                weatherData?.main.temp_min != undefined
+                  ? Math.round(weatherData?.main.temp_min)
+                  : "-"
               } °C`}</span>
             </div>
           </div>

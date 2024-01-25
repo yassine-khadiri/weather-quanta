@@ -13,6 +13,23 @@ export const monthsOfYear: string[] = [
   "December",
 ];
 
+export type SuggestType = {
+  id: number;
+  city: string;
+  lat: number;
+  lng: number;
+  country: string;
+  iso2: string;
+};
+
+export type WeatherImagesType = {
+  main: string;
+  description: {
+    value: string;
+    icons: string[];
+  }[];
+};
+
 export const weatherImages = [
   {
     main: "Clear",
@@ -40,20 +57,17 @@ export const weatherImages = [
         value: "scattered clouds",
         icons: [
           "/assets/weather-icons/03d.png",
-          "/assets/weather-icons/03d.png",
         ],
       },
       {
         value: "broken clouds",
         icons: [
           "/assets/weather-icons/04d.png",
-          "/assets/weather-icons/04d.png",
         ],
       },
       {
         value: "overcast clouds",
         icons: [
-          "/assets/weather-icons/04d.png",
           "/assets/weather-icons/04d.png",
         ],
       },
