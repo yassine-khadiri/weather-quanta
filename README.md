@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+# Weather-Quanta
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Weather-Quanta is a small weather web application built with ReactJS and Vite. It provides current weather information using the OpenWeatherMap API and IPInfo. Users can get accurate weather updates based on their location or a specified city.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Displays current weather conditions, including temperature, humidity, wind speed, and more.
+- Automatic location detection using IPInfo for a seamless user experience.
+- Users can manually search for weather updates in specific cities.
+- Clean and intuitive interface for easy navigation.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React + TypeScript + Vite...
+- OpenWeatherMap API for weather data ==> www.openweathermap.org/current
+- IPInfo for automatic location detection ==> www.ipinfo.io
+- JSON file hosted on GitHub for suggested cities ==> https://yassine-khadiri.github.io/world-cities/world-cities.json
 
-- Configure the top-level `parserOptions` property like this:
+## How to Use
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Clone the repository to your local machine.
+2. Obtain API keys for OpenWeatherMap and IPInfo.
+3. Install dependencies: `npm install`
+4. Uncomment and Replace (your_openweathermap_api_key && your_ipinfo_access_token) in .env file with yours, <br />
+   To get: openweathermap_api_key ===> https://home.openweathermap.org/api_keys <br />
+           ipinfo_access_token ===> https://ipinfo.io/account/home
+6. Start the development server: `npm run dev`
+7. Open your web browser and navigate to `http://localhost:5173`.

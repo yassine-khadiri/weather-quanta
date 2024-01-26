@@ -1,11 +1,12 @@
 import "./App.css";
 import { CiLocationOn } from "react-icons/ci";
 import { GiWindsock, GiSunrise, GiSunset } from "react-icons/gi";
+import { BsTwitterX, BsGithub, BsLinkedin } from "react-icons/bs";
 import { MdOutlineWaterDrop } from "react-icons/md";
 import { IoHeartSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaTemperatureArrowUp, FaTemperatureArrowDown } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { monthsOfYear, weatherImages } from "./utils/data";
 import { SuggestType } from "./utils/data";
 import axios from "axios";
@@ -21,6 +22,7 @@ function App() {
   const [icon, setIcon] = useState<string | null>(null);
   const [weatherData, setWeatherData] = useState<any>();
   const [suggestion, setSuggestion] = useState<SuggestType[]>([]);
+  const suggestRef = useRef<HTMLDivElement | null>(null);
   let filtredCities: JSX.Element[];
 
   const getAmPmFormat = (timestamp: number): string => {
@@ -35,7 +37,7 @@ function App() {
   };
 
   const findAppropriateIcon = () => {
-    let iconImg: string = weatherImages
+    let weatherIcon: string = weatherImages
       .filter(
         (elem) =>
           elem.main === weatherData?.weather[0].main &&
@@ -47,6 +49,7 @@ function App() {
         const matchingDescription = elem.description.find(
           (elem) => elem.value === weatherData?.weather[0].description,
         );
+
         if (matchingDescription?.icons.length! > 1) {
           return matchingDescription?.icons.find(
             (elem) =>
@@ -59,7 +62,7 @@ function App() {
         return matchingDescription?.icons[0];
       })
       .pop()!;
-    setIcon(iconImg as string);
+    setIcon(weatherIcon as string);
   };
 
   const getSuggestedCities = async () => {
@@ -76,7 +79,9 @@ function App() {
   const getLocationInfos = async () => {
     try {
       const locationData = await axios.get(
-        `https://ipinfo.io/json?token=${import.meta.env.VITE_IP_INFO_TOKEN}`,
+        `https://ipinfo.io/json?token=${
+          import.meta.env.VITE_IPINFO_ACCESS_TOKEN
+        }`,
       );
       getWeatherInfos(locationData.data.city, locationData.data.country);
     } catch {
@@ -90,7 +95,7 @@ function App() {
 
     try {
       const data = await axios.get(
-        `http://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${
+        `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${
           import.meta.env.VITE_WEATHER_API_KEY
         }&units=metric`,
       );
@@ -102,6 +107,13 @@ function App() {
 
   useEffect(() => {
     getLocationInfos();
+
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!suggestRef.current?.contains(e.target as Node)) setHide(false);
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => document.removeEventListener("mousedown", handleMouseDown);
   }, []);
 
   useEffect(() => {
@@ -109,7 +121,7 @@ function App() {
   }, [weatherData]);
 
   return (
-    <div className="relative flex h-screen min-h-[850px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-no-repeat py-8 bg-blend-darken">
+    <div className="relative flex h-screen min-h-[1000px] w-full flex-col items-center justify-center bg-[rgba(0,0,0,0.4)] bg-[url('./assets/cover.jpeg')] bg-cover bg-center bg-no-repeat py-5 bg-blend-darken sm:min-h-[900px]">
       <div className="container flex h-full flex-col items-end justify-center gap-10">
         <div className="relative mr-2 w-[250px] rounded-xl min-[460px]:mr-0 min-[460px]:w-[300px]">
           <FaSearch className="absolute left-3 top-3 z-10" />
@@ -125,7 +137,10 @@ function App() {
             }}
           />
           {search.trim().length > 0 && hide && (
-            <div className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] overflow-auto rounded-xl px-5 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]">
+            <div
+              ref={suggestRef}
+              className="glassmorphism absolute z-10 ml-5 mt-2 max-h-[200px] w-[230px] overflow-auto rounded-xl px-3 py-3 backdrop-blur-[13px] min-[460px]:max-h-[400px] min-[460px]:w-[280px]"
+            >
               {
                 ((filtredCities = suggestion
                   .filter((elem: SuggestType) =>
@@ -240,9 +255,26 @@ function App() {
           </div>
         </div>
       </div>
-      <footer className="p-4">
-        Made With <IoHeartSharp className="inline-block text-red-500" /> By
-        Yassine
+
+      <footer className="flex flex-col items-center gap-4 p-4">
+        <span>
+          Made With <IoHeartSharp className="inline-block text-red-500" /> By
+          Yassine
+        </span>
+        <div className="flex w-fit gap-[18px] text-[#928A97]">
+          <a href="https://twitter.com/KHADIRIYassine1" title="Twitter">
+            <BsTwitterX className="h-[20px] w-[20px] cursor-pointer duration-300 ease-in-out hover:scale-125 hover:text-white sm:h-[30px] sm:w-[30px]" />
+          </a>
+          <a href="https://github.com/yassine-khadiri" title="Github">
+            <BsGithub className="h-[20px] w-[20px] cursor-pointer duration-300 ease-in-out hover:scale-125 hover:text-white sm:h-[30px] sm:w-[30px]" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/yassine-khadiri/"
+            title="Linkedin"
+          >
+            <BsLinkedin className="h-[20px] w-[20px] cursor-pointer duration-300 ease-in-out hover:scale-125 hover:text-[#0077b5] sm:h-[30px] sm:w-[30px]" />
+          </a>
+        </div>
       </footer>
     </div>
   );

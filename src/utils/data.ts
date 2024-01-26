@@ -55,21 +55,15 @@ export const weatherImages = [
       },
       {
         value: "scattered clouds",
-        icons: [
-          "/assets/weather-icons/03d.png",
-        ],
+        icons: ["/assets/weather-icons/03d.png"],
       },
       {
         value: "broken clouds",
-        icons: [
-          "/assets/weather-icons/04d.png",
-        ],
+        icons: ["/assets/weather-icons/04d.png"],
       },
       {
         value: "overcast clouds",
-        icons: [
-          "/assets/weather-icons/04d.png",
-        ],
+        icons: ["/assets/weather-icons/04d.png"],
       },
     ],
   },
@@ -250,6 +244,91 @@ export const weatherImages = [
       {
         value: "heavy shower snow",
         icons: ["/assets/weather-icons/13d.png"],
+      },
+    ],
+  },
+  {
+    main: "Mist",
+    description: [
+      {
+        value: "mist",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Smoke",
+    description: [
+      {
+        value: "smoke",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Haze",
+    description: [
+      {
+        value: "haze",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Dust",
+    description: [
+      {
+        value: "sand/dust whirls",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+      {
+        value: "dust",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Fog",
+    description: [
+      {
+        value: "fog",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Sand",
+    description: [
+      {
+        value: "sand",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Ash",
+    description: [
+      {
+        value: "volcanic ash",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Squall",
+    description: [
+      {
+        value: "squalls",
+        icons: ["/assets/weather-icons/50d.png"],
+      },
+    ],
+  },
+  {
+    main: "Tornado",
+    description: [
+      {
+        value: "tornado",
+        icons: ["/assets/weather-icons/50d.png"],
       },
     ],
   },
