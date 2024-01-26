@@ -25,4 +25,4 @@ Weather-Quanta is a small weather web application built with ReactJS and Vite. I
    To get: openweathermap_api_key ===> https://home.openweathermap.org/api_keys <br />
            ipinfo_access_token ===> https://ipinfo.io/account/home
 6. Start the development server: `npm run dev`
-7. Open your web browser and navigate to `http://localhost:5173`.
+7. Open your web browser and navigate to `http://localhost:5173`

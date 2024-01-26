@@ -166,7 +166,6 @@ function App() {
 
         <div className="glassmorphism relative grid h-[60%] min-h-[680px] w-full select-none grid-cols-[minmax(0,auto)] grid-rows-[repeat(3,minmax(0,auto))] px-1 pb-5 pt-24 min-[460px]:items-end min-[460px]:px-5 lg:grid-cols-2">
           <span className="absolute right-10 top-10 text-xl">{`${day} ${monthsOfYear[month]}, ${year}`}</span>
-
           <div className="flex flex-col justify-center gap-10 p-5 text-5xl">
             <div className=" flex flex-col gap-4 text-5xl">
               <div className="flex items-center text-lg">
