@@ -35,9 +35,6 @@ function App() {
   };
 
   const findAppropriateIcon = () => {
-    console.log(weatherData);
-
-    console.log(weatherData?.weather[0].main);
     let iconImg: string = weatherImages
       .filter(
         (elem) =>
@@ -47,7 +44,6 @@ function App() {
           ),
       )
       .map((elem) => {
-        console.log("inside map");
         const matchingDescription = elem.description.find(
           (elem) => elem.value === weatherData?.weather[0].description,
         );
@@ -69,7 +65,7 @@ function App() {
   const getSuggestedCities = async () => {
     try {
       const suggestedCites = await axios.get(
-        `https://yassine-khadiri.github.io/world-cities/worldCities.json`,
+        `https://yassine-khadiri.github.io/world-cities/world-cities.json`,
       );
       setSuggestion(suggestedCites.data);
     } catch {
@@ -82,8 +78,6 @@ function App() {
       const locationData = await axios.get(
         `https://ipinfo.io/json?token=${import.meta.env.VITE_IP_INFO_TOKEN}`,
       );
-
-      // const [extractedLat, extractedLng] = locationData.data.loc.split(",");
       getWeatherInfos(locationData.data.city, locationData.data.country);
     } catch {
       console.log("Connot Get Weather Infos!");
@@ -95,20 +89,11 @@ function App() {
     setHide(false);
 
     try {
-      // const data = await axios.get(
-      //   `https://api.openweathermap.org/data/2.5/weather?lat=${
-      //     location.lat
-      //   }&lon=${location.lng}&appid=${
-      //     import.meta.env.VITE_WEATHER_API_KEY
-      //   }&units=metric`,
-      // );
-
       const data = await axios.get(
         `http://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${
           import.meta.env.VITE_WEATHER_API_KEY
         }&units=metric`,
       );
-
       setWeatherData(data.data);
     } catch {
       console.log("Connot Get Weather Infos!");
@@ -120,7 +105,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("icon");
     findAppropriateIcon();
   }, [weatherData]);
 
@@ -214,12 +198,9 @@ function App() {
                 className="mr-10 text-[100px] min-[1280px]:mr-20 min-[1280px]:text-[200px]"
                 title="Temperature"
               >
-                {`${
-                  weatherData?.main.temp !== undefined
-                    ? Math.round(weatherData?.main.temp)
-                    : "-"
-                }
-`}
+                {weatherData?.main.temp !== undefined
+                  ? Math.round(weatherData?.main.temp)
+                  : "-"}
               </span>
               <span className="absolute right-0 top-5 text-[40px] min-[1280px]:text-[80px]">
                 °C
