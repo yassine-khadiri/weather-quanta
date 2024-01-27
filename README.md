@@ -1,6 +1,6 @@
 # Weather-Quanta
 
-Weather-Quanta is a small weather web application built with ReactJS and Vite. It provides current weather information using the OpenWeatherMap API and IPInfo. Users can get accurate weather updates based on their location or a specified city.
+WeatherQuanta is a small weather web application built with ReactJS and Vite. It provides current weather information using the OpenWeatherMap API and IPInfo. Users can get accurate weather updates based on their location or a specified city.
 
 ## Features
 
